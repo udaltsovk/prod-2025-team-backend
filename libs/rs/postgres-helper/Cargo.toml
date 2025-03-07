@@ -1,0 +1,10 @@
+[package]
+name = "postgres-helper"
+version = "0.1.0"
+edition = "2021"
+authors = ["Kirill Udaltsov <commits@udaltsovk.ru>"]
+
+[dependencies]
+log = { workspace = true }
+
+sqlx = { workspace = true }

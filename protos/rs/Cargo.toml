@@ -1,0 +1,14 @@
+[package]
+name = "protos"
+version = "0.1.0"
+edition = "2021"
+authors = ["Kirill Udaltsov <commits@udaltsovk.ru>"]
+
+[dependencies]
+tonic = { workspace = true }
+prost = "0.13"
+prost-types = { workspace = true }
+
+
+[build-dependencies]
+tonic-build = "0.12"

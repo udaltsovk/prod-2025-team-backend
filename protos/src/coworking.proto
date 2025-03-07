@@ -1,0 +1,77 @@
+package coworking;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "/";
+
+service Coworking {
+  rpc Create(CreateCoworkingRequest) returns (CreateCoworkingResponse);
+  rpc GetByID(GetCoworkingByIDRequest) returns (CoworkingResponse);
+  rpc Update(UpdateCoworkingRequest) returns (CoworkingResponse);
+  rpc Delete(DeleteCoworkingRequest) returns (google.protobuf.Empty);
+  rpc CreateSeat(CreateSeatRequest) returns (SeatResponse);
+  rpc GetSeat(SeatRequest) returns (SeatResponse);
+  rpc UpdateSeat(UpdateSeatRequest) returns (SeatResponse);
+  rpc DeleteSeat(SeatRequest) returns (google.protobuf.Empty);
+  rpc GetSeats(GetSeatsRequest) returns (SeatsResponse);
+}
+
+message CoworkingResponse {
+  required string id = 1;
+  required string name = 2;
+  required string address = 3;
+  required uint64 available_seats = 4;
+  required uint64 total_seats = 5;
+}
+
+message CreateCoworkingRequest {
+  required string name = 1;
+  required string address = 2;
+}
+
+message CreateCoworkingResponse { required string id = 1; }
+
+message GetCoworkingByIDRequest { required string id = 1; }
+
+message UpdateCoworkingRequest {
+  required string id = 1;
+  optional string name = 2;
+  optional string address = 3;
+}
+
+message DeleteCoworkingRequest { required string id = 1; }
+
+message SeatResponse {
+  required string id = 1;
+  required uint64 number = 2;
+  required string type = 3;
+  required uint64 capacity = 4;
+  repeated string features = 5;
+  required double cost = 6;
+}
+
+message CreateSeatRequest {
+  required uint64 number = 1;
+  required string type = 2;
+  required uint64 capacity = 3;
+  repeated string features = 4;
+  required double cost = 5;
+}
+
+message SeatRequest { required string id = 1; }
+
+message UpdateSeatRequest {
+  required string id = 1;
+  optional uint64 number = 2;
+  optional string type = 3;
+  optional uint64 capacity = 4;
+  repeated string features = 5;
+  optional double cost = 6;
+}
+
+message GetSeatsRequest {
+  required uint32 limit = 1;
+  required uint64 offset = 2;
+}
+
+message SeatsResponse { repeated SeatResponse seats = 1; }

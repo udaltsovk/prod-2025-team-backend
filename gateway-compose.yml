@@ -1,0 +1,80 @@
+name: t_lounge
+services:
+  db:
+    image: postgres:alpine
+    restart: on-failure
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - 5432:5432
+  admin:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/rust.Dockerfile
+      args:
+        SERVICE: admin
+    restart: on-failure
+    ports:
+      - 50051:50051
+    depends_on:
+      - db
+    environment:
+      SERVICE_ADDRESS: "[::1]:50051"
+      DATABASE_ADDRESS: "postgres://postgres:postgres@db:5432/admin"
+  client:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/rust.Dockerfile
+      args:
+        SERVICE: client
+    restart: on-failure
+    ports:
+      - 50052:50052
+    depends_on:
+      - db
+    environment:
+      SERVICE_ADDRESS: "[::1]:50052"
+      DATABASE_ADDRES: "postgres://postgres:postgres@db:5432/client"
+  coworking:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/go.Dockerfile
+      args:
+        SERVICE: coworking
+    restart: on-failure
+    ports:
+      - 50053:50053
+    depends_on:
+      - db
+    environment:
+      SERVER_PORT: 50053
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: coworking
+  reservation:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/go.Dockerfile
+      args:
+        SERVICE: reservation
+    restart: on-failure
+    ports:
+      - 50054:50054
+    depends_on:
+      - db
+    environment:
+      SERVER_PORT: 50054
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DATABASE: reservation
+volumes:
+  db-data:
+

@@ -1,0 +1,90 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO clients (id, name, surname, patronymic, email, password_hash, last_password_change, send_notifications, is_internal, verified, deleted)\nVALUES ($1, $2, $3, $4, $5, $6, current_timestamp, $7, $8, $9, false)\nRETURNING *\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "surname",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "email",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "password_hash",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "last_password_change",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "send_notifications",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "is_internal",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 8,
+        "name": "verified",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 9,
+        "name": "deleted",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 10,
+        "name": "patronymic",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Text",
+        "Bool",
+        "Bool",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "b6ad62de61c00e4b7d402460d99b0ebe384fabfa7951970525c396efb9c4899b"
+}

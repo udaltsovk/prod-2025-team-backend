@@ -1,0 +1,124 @@
+stages:
+  - build
+
+.build_template:
+  image:
+    name: gcr.io/kaniko-project/executor:v1.23.2-debug
+    entrypoint: [ "" ]
+  interruptible: true
+  variables:
+    DOCKER_CONFIG: /kaniko/.docker
+    REGISTRY_USER: $CI_REGISTRY_USER
+    REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
+    TAG: $CI_COMMIT_REF_NAME
+  script:
+    - |
+      export SANITIZED_TAG="${CI_COMMIT_REF_NAME//\//-}"
+      mkdir -p /kaniko/.docker
+      echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$REGISTRY_USER\",\"password\":\"$REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+
+      DOCKERFILE="dockerfiles/coworking.goose.Dockerfile"  # Default to migrations
+      case "${SERVICE_DIR}" in
+        *"/go/"*) DOCKERFILE="dockerfiles/go.Dockerfile" ;;
+        *"/rs/"*) DOCKERFILE="dockerfiles/rust.Dockerfile" ;;
+      esac
+
+      /kaniko/executor \
+        --context "${CI_PROJECT_DIR}" \
+        --dockerfile "${CI_PROJECT_DIR}/${DOCKERFILE}" \
+        --destination "${CI_REGISTRY_IMAGE}/${SERVICE_NAME}:${SANITIZED_TAG}" \
+        --build-arg "SERVICE=${SERVICE_NAME}" \
+        --cache=true \
+        --snapshot-mode=time \
+        --registry-mirror=dockerhub.timeweb.cloud
+
+build-rs-gateway:
+  extends: .build_template
+  stage: build
+  rules:
+      - when: always
+  variables:
+    SERVICE_DIR: "services/rs/gateway"
+    SERVICE_NAME: "gateway"
+
+build-rs-admin:
+  extends: .build_template
+  stage: build
+  rules:
+      - when: always
+  variables:
+    SERVICE_DIR: "services/rs/admin"
+    SERVICE_NAME: "admin"
+
+build-rs-client:
+  extends: .build_template
+  stage: build
+  rules:
+      - when: always
+  variables:
+    SERVICE_DIR: "services/rs/client"
+    SERVICE_NAME: "client"
+
+build-go-coworking:
+  extends: .build_template
+  stage: build
+  rules:
+    - when: always
+  variables:
+    SERVICE_DIR: "services/go/coworking"
+    SERVICE_NAME: "coworking"
+
+build-go-reservation:
+  extends: .build_template
+  stage: build
+  rules:
+    - when: always
+  variables:
+    SERVICE_DIR: "services/go/reservation"
+    SERVICE_NAME: "reservation"
+
+build-go-image:
+  extends: .build_template
+  stage: build
+  rules:
+    - when: always
+  variables:
+    SERVICE_DIR: "services/go/image"
+    SERVICE_NAME: "image"
+
+build-go-coworking-goose:
+  extends: .build_template
+  stage: build
+  rules:
+    - when: always
+  variables:
+    SERVICE_DIR: ""
+    SERVICE_NAME: "goose"
+
+build-go-mail:
+  extends: .build_template
+  stage: build
+  rules:
+      - when: always
+  variables:
+    SERVICE_DIR: "services/go/mail"
+    SERVICE_NAME: "mail"
+
+build-rs-notification:
+  extends: .build_template
+  stage: build
+  rules:
+      - when: always
+  variables:
+    SERVICE_DIR: "services/rs/notification"
+    SERVICE_NAME: "notification"
+
+build-go-seat-lock:
+  extends: .build_template
+  stage: build
+  rules:
+    - when: always
+  variables:
+    SERVICE_DIR: "services/go/seat-lock"
+    SERVICE_NAME: "seat-lock"
+

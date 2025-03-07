@@ -1,0 +1,83 @@
+package client;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+service Client {
+  rpc Register(RegisterRequest) returns (AuthResponse);
+  rpc Login(LoginRequest) returns (AuthResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ClientResponse);
+  rpc ChangePassword(ChangePasswordRequest) returns (AuthResponse);
+  rpc Get(ClientRequest) returns (ClientResponse);
+  rpc GetMultiple(ClientsRequest) returns (ClientsResponse);
+  rpc Edit(EditRequest) returns (ClientResponse);
+  rpc Delete(ClientRequest) returns (google.protobuf.Empty);
+}
+
+message ClientMeta {
+  required string email = 1;
+  required string name = 2;
+  required string surname = 3;
+  required string patronymic = 4;
+  required bool send_notifications = 5;
+  required bool is_internal = 6;
+}
+
+message ClientResponse {
+  required string id = 1;
+  required ClientMeta meta = 2;
+  required google.protobuf.Timestamp last_password_cgange = 3;
+  required bool verified = 4;
+}
+
+message RegisterRequest {
+  required ClientMeta meta = 1;
+  required string password = 2;
+}
+
+message AuthResponse {
+  required ClientResponse client = 1;
+  required string token = 2;
+}
+
+message LoginRequest {
+  required string email = 1;
+  required string password = 2;
+}
+
+message ValidateTokenRequest {
+  required string token = 1;
+}
+
+message ChangePasswordRequest {
+  required string id = 1;
+  required string current_password = 2;
+  required string new_password = 3;
+}
+
+message ClientRequest {
+  required string id = 1;
+}
+
+message ClientsRequest {
+  required uint32 limit = 1;
+  required uint64 offset = 2;
+  optional uint32 day = 3;
+  optional uint32 month = 4;
+  optional uint64 year = 5;
+}
+
+message ClientsResponse {
+  repeated ClientResponse clients = 1;
+}
+
+message EditRequest {
+  required string id = 1;
+  optional string email = 2;
+  optional string name = 3;
+  optional string surname = 4;
+  optional string patronymic = 5;
+  optional bool send_notifications = 6;
+  optional bool is_internal = 7;
+  optional bool verified = 8;
+}

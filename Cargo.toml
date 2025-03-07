@@ -1,0 +1,73 @@
+[workspace]
+resolver = "2"
+
+members = [ 
+    "protos/rs",
+    "libs/rs/env-config", 
+    "libs/rs/postgres-helper",
+    "libs/rs/service-helper", 
+    "services/rs/gateway", 
+    "services/rs/admin", 
+    "services/rs/client", 
+    "services/rs/notification", "libs/rs/convertions", 
+]
+
+
+[workspace.dependencies]
+protos = { path = "./protos/rs" }
+convertions = { path = "./libs/rs/convertions" }
+env-config = { path = "./libs/rs/env-config" }
+postgres-helper = { path = "./libs/rs/postgres-helper" }
+service-helper = { path = "./libs/rs/service-helper" }
+
+tokio = { version = "1.43", features = ["macros", "rt-multi-thread"] }
+async-trait = "0.1"
+futures = "0.3"
+
+include_dir = "0.7"
+
+log = "0.4"
+env_logger = "0.11"
+thiserror = "2.0"
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+uuid = { version = "1.12", features = ["v7", "macro-diagnostics", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+argon2 = { version = "0.5", features = ["std"] }
+base64 = "0.22"
+rand_chacha = "0.3"
+jsonwebtoken = "9"
+
+sqlx = { version = "0.8", features = [
+    "runtime-tokio-rustls", 
+    "postgres",
+    "uuid",
+    "chrono", 
+    "macros", 
+    "migrate", 
+    "json"
+] }
+
+tonic = { version = "0.12", features = ["zstd"] }
+prost-types = "0.13"
+
+# metrics = "0.24"
+# metrics-exporter-prometheus = { version = "0.16", default-features = false }
+# opentelemetry = "0.28"
+# opentelemetry_sdk = { version = "0.28", features = ["rt-tokio-current-thread"] }
+# opentelemetry-otlp = { version = "0.28", features = ["tls-roots"] }
+# tracing-opentelemetry = "0.29"
+# tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+# tracing-bunyan-formatter = "0.3"
+# tracing = "0.1"
+
+
+[profile.release]
+lto = true
+strip = true
+opt-level = 3
+panic = 'abort'
+codegen-units = 1

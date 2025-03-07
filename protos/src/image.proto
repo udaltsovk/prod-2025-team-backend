@@ -1,0 +1,50 @@
+package image;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "/";
+
+service Image {
+  rpc UploadImage(stream UploadImageRequest) returns (UploadImageResponse);
+  rpc GetImage(GetImageRequest) returns (stream GetImageResponse);
+  rpc DeleteImage(DeleteImageRequest) returns (google.protobuf.Empty);
+}
+
+enum ImageType {
+  AVATAR = 1;
+  COWORKING = 2;
+  SEAT = 3;
+  FEATURE = 4;
+}
+
+message UploadImageRequest {
+  oneof data {
+    Metadata metadata = 1;
+    bytes content = 2;
+  }
+}
+
+message UploadImageResponse {
+  required string filename = 1;
+}
+
+message Metadata {
+  required string id = 1;
+  required string content_type = 2;
+  required ImageType image_type = 3;
+}
+
+message GetImageRequest {
+  required string id = 1;
+  required ImageType image_type = 2;
+}
+
+message GetImageResponse {
+  required bytes content = 1;
+}
+
+message DeleteImageRequest {
+  required string id = 1;
+  required ImageType image_type = 2;
+}
+

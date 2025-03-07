@@ -1,0 +1,3 @@
+### Коды ошибок:
+* NotFound
+* Internal

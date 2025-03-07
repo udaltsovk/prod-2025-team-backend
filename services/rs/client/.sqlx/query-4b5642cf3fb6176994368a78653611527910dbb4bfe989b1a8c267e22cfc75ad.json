@@ -1,0 +1,82 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT *\nFROM clients\nWHERE id = $1 AND NOT deleted",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "surname",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "email",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "password_hash",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "last_password_change",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "send_notifications",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "is_internal",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 8,
+        "name": "verified",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 9,
+        "name": "deleted",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 10,
+        "name": "patronymic",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "4b5642cf3fb6176994368a78653611527910dbb4bfe989b1a8c267e22cfc75ad"
+}

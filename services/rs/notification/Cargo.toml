@@ -1,0 +1,24 @@
+[package]
+name = "notification"
+version = "0.1.0"
+edition = "2021"
+authors = ["Kirill Udaltsov <commits@udaltsovk.ru>"]
+
+[dependencies]
+protos = { workspace = true }
+convertions = { workspace = true }
+env-config = { workspace = true }
+service-helper = { workspace = true }
+
+log = { workspace = true }
+env_logger = { workspace = true }
+thiserror = { workspace = true }
+
+# serde = { workspace = true }
+# serde_json = { workspace = true }
+
+uuid = { workspace = true }
+chrono = { workspace = true }
+
+tokio = { workspace = true }
+tonic = { workspace = true }

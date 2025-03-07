@@ -1,0 +1,165 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: postgres  # default main DB
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  admin:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/rust.Dockerfile
+      args:
+        SERVICE: admin
+    restart: on-failure
+    ports:
+      - 50051:50051
+    depends_on:
+      - db
+    environment:
+      SERVICE_ADDRESS: "[::1]:50051"
+      DATABASE_ADDRESS: "postgres://postgres:postgres@db:5432/admin"
+  client:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/rust.Dockerfile
+      args:
+        SERVICE: client
+    restart: on-failure
+    ports:
+      - 50052:50052
+    depends_on:
+      - db
+    environment:
+      SERVICE_ADDRESS: "[::1]:50052"
+      DATABASE_ADDRES: "postgres://postgres:postgres@db:5432/client"
+  coworking:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/go.Dockerfile
+      args:
+        SERVICE: coworking
+    restart: on-failure
+    ports:
+      - 50053:50053
+    depends_on:
+      - db
+    environment:
+      SERVER_PORT: 50053
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: coworking
+  reservation:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/go.Dockerfile
+      args:
+        SERVICE: reservation
+    restart: on-failure
+    ports:
+      - 50054:50054
+    depends_on:
+      - db
+    environment:
+      SERVER_PORT: 50054
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DATABASE: reservation
+
+  gateway:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/rust.Dockerfile
+      args:
+        SERVICE: gateway
+    ports:
+      - "30001:8080"
+    environment:
+      RUST_LOG: "debug"
+      SERVER_ADDRESS: "0.0.0.0:8080"
+      COWORKING_ID: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      ADMIN_SERVICE_ADDRESS: "admin-service:80"
+      CLIENT_SERVICE_ADDRESS: "client-service:80"
+      COWORKING_SERVICE_ADDRESS: "coworking-service:80"
+      RESERVATION_SERVICE_ADDRESS: "reservation-service:80"
+      MAIL_SERVICE_ADDRESS: "mail-service:80"
+      NOTIFICATION_SERVICE_ADDRESS: "notification-service:80"
+    depends_on:
+      - mail
+      - notification
+
+  # Seat Lock Service
+  seat-lock:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/go.Dockerfile
+      args:
+        SERVICE: seat-lock
+    environment:
+      SERVER_PORT: "8080"
+      REDIS_HOST: "redis:6379"
+      REDIS_PASSWORD: "F5r64tJ5asK5"
+    depends_on:
+      - redis
+
+  # Mail Service
+  mail:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/go.Dockerfile
+      args:
+        SERVICE: mail
+    environment:
+      SERVER_PORT: "8080"
+      MAIL_PASSWORD: ""
+      MAIL_PORT: "587"
+      MAIL_HOST: ""
+      MAIL_EMAIL: ""
+
+  # Notification Service
+  notification:
+    build:
+      context: ../
+      dockerfile: ./dockerfiles/rust.Dockerfile
+      args:
+        SERVICE: client
+    environment:
+      SERVICE_ADDRESS: "0.0.0.0:8080"
+      COWORKING_ID: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+      CLIENT_SERVICE_ADDRESS: "client-service:80"
+      COWORKING_SERVICE_ADDRESS: "coworking-service:80"
+      RESERVATION_SERVICE_ADDRESS: "reservation-service:80"
+      MAIL_SERVICE_ADDRESS: "mail-service:80"
+
+  # Redis for Seat Lock
+  redis:
+    image: redis:alpine
+    command: redis-server --requirepass F5r64tJ5asK5
+    ports:
+      - "6379:6379"
+
+networks:
+  default:
+    name: backend-network
+    driver: bridge
+
+volumes:
+  postgres_data:

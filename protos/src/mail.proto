@@ -1,0 +1,15 @@
+package mail;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "/";
+
+service Mail {
+  rpc Send(SendRequest) returns (google.protobuf.Empty);
+}
+
+message SendRequest {
+  repeated string to = 1;
+  optional string subject = 2;
+  optional string body = 3;
+}

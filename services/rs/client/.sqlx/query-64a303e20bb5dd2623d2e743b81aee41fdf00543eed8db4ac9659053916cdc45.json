@@ -1,0 +1,82 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE clients\nSET name                 = '',\n    surname              = '',\n    patronymic           = '',\n    email                = '',\n    password_hash        = '',\n    last_password_change = current_timestamp,\n    send_notifications   = false,\n    deleted              = true\nWHERE id = $1 AND NOT deleted\nRETURNING *\n",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "surname",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "email",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "password_hash",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "last_password_change",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "send_notifications",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "is_internal",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 8,
+        "name": "verified",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 9,
+        "name": "deleted",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 10,
+        "name": "patronymic",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "64a303e20bb5dd2623d2e743b81aee41fdf00543eed8db4ac9659053916cdc45"
+}

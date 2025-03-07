@@ -1,0 +1,8 @@
+.dockerignore
+dockerfiles
+nix
+README.md
+target
+.direnv
+.env
+compose.yml

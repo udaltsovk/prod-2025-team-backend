@@ -1,0 +1,9 @@
+[package]
+name = "convertions"
+version = "0.1.0"
+edition = "2021"
+authors = ["Kirill Udaltsov <commits@udaltsovk.ru>"]
+
+[dependencies]
+chrono = { workspace = true }
+prost-types = { workspace = true }

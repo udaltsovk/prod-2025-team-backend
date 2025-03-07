@@ -1,0 +1,28 @@
+package seatLock;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "/";
+
+service SeatLock {
+  rpc SetLock(SetLockRequest) returns (google.protobuf.Empty);
+  rpc GetLockByUserID(GetLockByUserIdRequest) returns (LockResponse);
+  rpc GetLockBySeatIndex(GetLockBySeatIndexRequest) returns (LockResponse);
+}
+
+message SetLockRequest {
+  required string user_id = 1;
+  required string seat_index = 2;
+}
+
+message GetLockByUserIdRequest {
+  required string user_id = 1;
+}
+
+message GetLockBySeatIndexRequest {
+  required string seat_index = 1;
+}
+
+message LockResponse {
+  required bool status = 1;
+}
